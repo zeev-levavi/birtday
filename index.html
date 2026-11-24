@@ -1,69 +1,673 @@
-function doPost(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheets()[0];
-  var data = {};
-  
-  if (e.postData && e.postData.contents) {
-    try {
-      data = JSON.parse(e.postData.contents);
-    } catch (err) {
-      data = e.parameter || {};
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>קאווזה הפקות | חגיגות יומולדת 34 לזאבי</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Rubik', sans-serif;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(255, 0, 153, 0.42) 0%, transparent 42%),
+        radial-gradient(circle at 82% 18%, rgba(0, 240, 255, 0.42) 0%, transparent 44%),
+        radial-gradient(circle at 50% 52%, rgba(163, 255, 18, 0.24) 0%, transparent 48%),
+        radial-gradient(circle at 20% 82%, rgba(168, 85, 247, 0.42) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(255, 153, 0, 0.35) 0%, transparent 45%),
+        #070416;
+      color: #ffffff;
+      overflow-x: hidden;
+      min-height: 100vh;
+      margin: 0;
     }
-  } else {
-    data = e.parameter || {};
-  }
-  
-  sheet.appendRow([
-    new Date().toLocaleString("he-IL"),
-    data.name || data.by || "אורח",
-    data.status || data.type || "",
-    Number(data.guests) || 0,
-    data.ride || "",
-    data.title || "",
-    data.dj || "",
-    data.score || ""
-  ]);
-  
-  return ContentService.createTextOutput("OK").setMimeType(ContentService.MimeType.TEXT);
-}
 
-function doGet(e) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheet = ss.getSheets()[0];
-  
-  // תמיכה גם בשמירת נתונים דרך פרמטרים בכתובת (למקרה ש-POST נחסם)
-  if (e && e.parameter && e.parameter.action === "save") {
-    var p = e.parameter;
-    sheet.appendRow([
-      new Date().toLocaleString("he-IL"),
-      p.name || p.by || "אורח",
-      p.status || p.type || "",
-      Number(p.guests) || 0,
-      p.ride || "",
-      p.title || "",
-      p.dj || "",
-      p.score || ""
-    ]);
-    return ContentService.createTextOutput("SAVED").setMimeType(ContentService.MimeType.TEXT);
-  }
+    /* Intense Multi-Color Laser Beams */
+    .laser-container { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+    .laser { position: absolute; top: -18%; width: 10px; height: 155vh; transform-origin: top center; filter: blur(3px); opacity: 0.78; mix-blend-mode: screen; }
+    .l1 { left: 8%; background: linear-gradient(to bottom, #ff00cc, rgba(255,0,204,0)); animation: beam1 5.5s ease-in-out infinite alternate; }
+    .l2 { left: 26%; background: linear-gradient(to bottom, #ffe600, rgba(255,230,0,0)); animation: beam2 7s ease-in-out infinite alternate; }
+    .l3 { left: 45%; background: linear-gradient(to bottom, #39ff14, rgba(57,255,20,0)); animation: beam3 6s ease-in-out infinite alternate; }
+    .l4 { left: 66%; background: linear-gradient(to bottom, #00f5ff, rgba(0,245,255,0)); animation: beam1 7.5s ease-in-out infinite alternate-reverse; }
+    .l5 { left: 86%; background: linear-gradient(to bottom, #ff2a85, rgba(255,42,133,0)); animation: beam2 5.2s ease-in-out infinite alternate-reverse; }
+    .l6 { left: 94%; background: linear-gradient(to bottom, #a855f7, rgba(168,85,247,0)); animation: beam3 6.8s ease-in-out infinite alternate-reverse; }
 
-  var rows = sheet.getDataRange().getValues();
-  var list = [];
-  
-  for (var i = 0; i < rows.length; i++) {
-    var r = rows[i];
-    if (r[2] === "מגיע" || r[2] === "אולי" || r[2] === "לא מגיע") {
-      list.push({
-        date: String(r[0]),
-        name: String(r[1]),
-        status: String(r[2]),
-        guests: Number(r[3]) || 1,
-        ride: String(r[4] || "-")
+    @keyframes beam1 { 0% { transform: rotate(-38deg) scaleX(1.2); } 100% { transform: rotate(32deg) scaleX(2.8); } }
+    @keyframes beam2 { 0% { transform: rotate(35deg) scaleX(1.4); } 100% { transform: rotate(-30deg) scaleX(2.5); } }
+    @keyframes beam3 { 0% { transform: rotate(-22deg) scaleX(1.6); } 100% { transform: rotate(26deg) scaleX(3); } }
+
+    .star { position: fixed; pointer-events: none; z-index: 0; animation: twinkle 2.4s ease-in-out infinite alternate; }
+    @keyframes twinkle { 0% { transform: scale(0.8) rotate(-8deg); opacity: 0.65; } 100% { transform: scale(1.3) rotate(18deg); opacity: 1; } }
+    @keyframes pulseSpeaker { 0%, 100% { transform: scale(1) rotate(-6deg); } 50% { transform: scale(1.12) rotate(4deg); } }
+    .speaker-bounce { animation: pulseSpeaker 1.4s ease-in-out infinite; }
+
+    /* Heavy 3D Silver-Blue Chrome Title matching Flyer */
+    .chrome-title {
+      background: linear-gradient(180deg, #ffffff 0%, #dbeafe 32%, #60a5fa 64%, #1d4ed8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      -webkit-text-stroke: 1.5px rgba(191, 219, 254, 0.55);
+      filter:
+        drop-shadow(0 3px 0 #1e3a8a)
+        drop-shadow(0 6px 0 #090d26)
+        drop-shadow(0 0 28px rgba(56, 189, 248, 0.95));
+    }
+    .chrome-number {
+      background: linear-gradient(180deg, #ffffff 0%, #e0f2fe 36%, #38bdf8 70%, #1e40af 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      -webkit-text-stroke: 2px rgba(224, 242, 254, 0.65);
+      filter:
+        drop-shadow(0 4px 0 #172554)
+        drop-shadow(0 9px 0 #050816)
+        drop-shadow(0 0 36px rgba(0, 245, 255, 1));
+    }
+
+    /* Bold Neon Yellow-to-Orange 2-Line Rave Banner */
+    .rave-yellow-title {
+      background: linear-gradient(180deg, #fef9c3 0%, #fde047 38%, #f59e0b 78%, #ea580c 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      -webkit-text-stroke: 1.5px rgba(254, 240, 138, 0.5);
+      filter:
+        drop-shadow(0 4px 0 #7c2d12)
+        drop-shadow(0 8px 0 #1f0702)
+        drop-shadow(0 0 34px rgba(250, 204, 21, 0.95));
+    }
+
+    /* Poster Outer Frame */
+    .flyer-frame {
+      background:
+        radial-gradient(circle at 50% 28%, rgba(255, 0, 153, 0.22), transparent 55%),
+        radial-gradient(circle at 50% 62%, rgba(250, 204, 21, 0.16), transparent 55%),
+        linear-gradient(180deg, rgba(16, 11, 46, 0.92) 0%, rgba(7, 6, 22, 0.96) 100%);
+      border: 2.5px solid rgba(0, 245, 255, 0.55);
+      box-shadow:
+        0 0 45px rgba(255, 0, 153, 0.45),
+        0 0 95px rgba(0, 245, 255, 0.35),
+        inset 0 0 50px rgba(168, 85, 247, 0.28);
+    }
+
+    /* Wild DJ Emblem Cards */
+    .dj-card-neftul {
+      background: radial-gradient(circle at 50% 35%, rgba(245, 158, 11, 0.42), rgba(20, 12, 8, 0.96));
+      border: 2.5px solid #fbbf24;
+      box-shadow: 0 0 32px rgba(245, 158, 11, 0.55), inset 0 0 20px rgba(245, 158, 11, 0.25);
+    }
+    .dj-card-backman {
+      background: radial-gradient(circle at 50% 35%, rgba(0, 245, 255, 0.38), rgba(8, 16, 36, 0.96));
+      border: 2.5px solid #22d3ee;
+      box-shadow: 0 0 34px rgba(34, 211, 238, 0.6), inset 0 0 20px rgba(236, 72, 153, 0.25);
+    }
+    .dj-card-insurance {
+      background: radial-gradient(circle at 50% 35%, rgba(236, 72, 153, 0.42), rgba(24, 10, 36, 0.96));
+      border: 2.5px solid #f472b6;
+      box-shadow: 0 0 32px rgba(236, 72, 153, 0.55), inset 0 0 20px rgba(56, 189, 248, 0.25);
+    }
+
+    /* Central Hero RSVP Card */
+    .rsvp-hero-box {
+      background: linear-gradient(135deg, rgba(181, 255, 0, 0.18) 0%, rgba(255, 0, 127, 0.16) 50%, rgba(12, 14, 38, 0.96) 100%);
+      border: 2.5px solid #b5ff00;
+      box-shadow: 0 0 35px rgba(181, 255, 0, 0.42), inset 0 0 22px rgba(181, 255, 0, 0.14);
+    }
+
+    /* Glowing Lime Hazard Ticket Banner matching Flyer Bottom */
+    .hazard-ticket {
+      background: linear-gradient(180deg, #d9ff3f 0%, #b5ff00 50%, #9ae600 100%);
+      border: 4px solid #111827;
+      box-shadow:
+        0 0 0 3px #b5ff00,
+        0 0 42px rgba(181, 255, 0, 0.85);
+    }
+    .hazard-top-bar {
+      height: 14px;
+      background: repeating-linear-gradient(
+        -55deg,
+        #111827,
+        #111827 14px,
+        #b5ff00 14px,
+        #b5ff00 28px
+      );
+      border-bottom: 3px solid #111827;
+    }
+
+    .glass-panel { background: rgba(13, 15, 38, 0.88); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.16); }
+    .hidden { display: none !important; }
+    .max-w-2xl { max-width: 42rem; margin-left: auto; margin-right: auto; }
+    .grid { display: grid; }
+    .grid-cols-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+    .col-span-5 { grid-column: span 5 / span 5; }
+    .col-span-4 { grid-column: span 4 / span 4; }
+    .col-span-3 { grid-column: span 3 / span 3; }
+    .flex-1 { flex: 1 1 0%; }
+    .shrink-0 { flex-shrink: 0; }
+    .grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .gap-2 { gap: 0.5rem; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+    .justify-center { justify-content: center; }
+    .text-center { text-align: center; }
+    .rounded-3xl { border-radius: 1.5rem; }
+    .rounded-2xl { border-radius: 1rem; }
+    .rounded-xl { border-radius: 0.75rem; }
+    .rounded-full { border-radius: 9999px; }
+    .p-4 { padding: 1rem; }
+    .p-5 { padding: 1.25rem; }
+    .w-full { width: 100%; }
+    .font-black { font-weight: 900; }
+    .font-bold { font-weight: 700; }
+    button { cursor: pointer; border: none; font-family: inherit; }
+    input, select { font-family: inherit; }
+    .tab-pill.active { background: linear-gradient(90deg, #b5ff00 0%, #00f5d4 100%); color: #050611; font-weight: 900; box-shadow: 0 0 22px rgba(181, 255, 0, 0.75); }
+  </style>
+</head>
+<body class="pb-16">
+  <!-- Intense Multi-Color Laser Show -->
+  <div class="laser-container">
+    <div class="laser l1"></div><div class="laser l2"></div><div class="laser l3"></div>
+    <div class="laser l4"></div><div class="laser l5"></div><div class="laser l6"></div>
+  </div>
+
+  <!-- Floating 3D-Style Neon Stars & Speakers -->
+  <svg width="38" height="38" class="star top-10 right-4 w-9 h-9 text-pink-500 drop-shadow-[0_0_12px_#ec4899]" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+  <svg width="36" height="36" class="star top-28 left-4 w-9 h-9 text-amber-400 drop-shadow-[0_0_12px_#f59e0b]" style="animation-delay:0.5s" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+  <svg width="42" height="42" class="star top-72 right-3 w-10 h-10 text-cyan-400 drop-shadow-[0_0_14px_#22d3ee]" style="animation-delay:1.1s" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+  <svg width="34" height="34" class="star bottom-28 left-4 w-8 h-8 text-lime-400 drop-shadow-[0_0_12px_#a3e635]" style="animation-delay:0.3s" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z"/></svg>
+
+  <div class="relative z-10 max-w-2xl mx-auto px-3 sm:px-5 pt-4">
+    <!-- Top Share Bar -->
+    <div class="flex items-center justify-between gap-2 mb-3 glass-panel rounded-full px-4 py-2 text-xs shadow-lg">
+      <div class="flex items-center gap-2 font-extrabold text-lime-300">
+        <span class="w-2.5 h-2.5 rounded-full bg-lime-400 animate-ping"></span>
+        <span>קאווזה הפקות • הזמנה רשמית</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="shareWhatsapp()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-3.5 py-1.5 rounded-full transition shadow">שלח בוואטסאפ</button>
+        <button type="button" onclick="copyShareLink()" id="copyBtn" class="bg-white/10 hover:bg-white/20 text-white font-bold px-3 py-1.5 rounded-full transition">העתק לינק</button>
+      </div>
+    </div>
+
+    <main class="flyer-frame rounded-3xl p-4 sm:p-7 relative overflow-hidden">
+      <!-- Header + Clean Original-Style Kavza Cedar Emblem -->
+      <header class="text-center relative z-10">
+        <div class="text-sm sm:text-base font-extrabold tracking-widest text-white mb-2 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+          קאווזה הפקות מציגים:
+        </div>
+
+        <!-- Clean Kavza Cedar Crest -->
+        <div class="inline-flex flex-col items-center justify-center bg-gradient-to-b from-emerald-950/90 to-slate-950/95 border-2 border-amber-400/80 rounded-2xl px-6 py-2.5 shadow-[0_0_28px_rgba(251,191,36,0.35)] mb-4">
+          <svg width="48" height="48" class="w-12 h-12 text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.7)]" viewBox="0 0 64 64" fill="currentColor">
+            <path d="M32 4L19 20h8L14 34h10L10 48h19v10h6V48h19L40 34h10L37 20h8L32 4z"/>
+          </svg>
+          <div class="mt-0.5 px-2.5 py-0.5 rounded bg-amber-400/15 border border-amber-400/50 text-amber-300 font-black text-xs tracking-wider">
+            קאווזה הפקות
+          </div>
+        </div>
+
+        <!-- 3D Chrome Title -->
+        <h1 class="font-black leading-none select-none">
+          <span class="block text-4xl sm:text-6xl chrome-title tracking-tight">חגיגות יומולדת</span>
+          <span class="block text-6xl sm:text-8xl chrome-number mt-1">34 לזאבי</span>
+        </h1>
+
+        <!-- Giant 2-Line Neon Party Banner with Flanking Bass Speakers & Stars -->
+        <div class="mt-4 mb-5 relative flex items-center justify-center gap-2 sm:gap-4">
+          <!-- Left Bass Speaker + Pink Star -->
+          <div class="speaker-bounce flex flex-col items-center">
+            <svg width="44" height="44" viewBox="0 0 64 64" class="w-10 h-10 sm:w-12 sm:h-12 drop-shadow-[0_0_12px_#ec4899]">
+              <polygon points="32,2 40,22 62,24 45,38 50,60 32,48 14,60 19,38 2,24 24,22" fill="#ec4899" stroke="#fbcfe8" stroke-width="2"/>
+              <circle cx="32" cy="34" r="14" fill="#1e1b4b" stroke="#38bdf8" stroke-width="3"/>
+              <circle cx="32" cy="34" r="6" fill="#22d3ee"/>
+            </svg>
+          </div>
+
+          <div class="relative inline-block">
+            <div class="absolute -inset-2 bg-gradient-to-r from-pink-500 via-yellow-400 to-cyan-400 rounded-2xl blur-xl opacity-55"></div>
+            <div class="relative px-3 py-1">
+              <span class="block text-5xl sm:text-6xl font-black rave-yellow-title leading-[0.95]">מסיבת</span>
+              <span class="block text-5xl sm:text-6xl font-black rave-yellow-title leading-[0.95]">ריקודים</span>
+            </div>
+          </div>
+
+          <!-- Right Bass Speaker + Cyan Star -->
+          <div class="speaker-bounce flex flex-col items-center" style="animation-delay:0.4s">
+            <svg width="44" height="44" viewBox="0 0 64 64" class="w-10 h-10 sm:w-12 sm:h-12 drop-shadow-[0_0_12px_#22d3ee]">
+              <polygon points="32,2 40,22 62,24 45,38 50,60 32,48 14,60 19,38 2,24 24,22" fill="#06b6d4" stroke="#cffafe" stroke-width="2"/>
+              <circle cx="32" cy="34" r="14" fill="#1e1b4b" stroke="#f472b6" stroke-width="3"/>
+              <circle cx="32" cy="34" r="6" fill="#facc15"/>
+            </svg>
+          </div>
+        </div>
+      </header>
+
+      <!-- Live Countdown -->
+      <section class="mb-5">
+        <div class="bg-slate-950/85 border-2 border-cyan-400/50 rounded-2xl p-3 text-center shadow-[0_0_25px_rgba(34,211,238,0.25)]">
+          <div class="text-[11px] uppercase tracking-widest text-cyan-300 font-black mb-2">⏳ ספירה לאחור לפתיחת הרחבה ⏳</div>
+          <div class="grid grid-cols-4 gap-2">
+            <div class="bg-gradient-to-b from-slate-900 to-slate-950 rounded-xl py-2 border border-lime-400/50"><div id="cd-days" class="text-2xl sm:text-3xl font-black text-lime-400">00</div><div class="text-[11px] text-slate-300 font-bold">ימים</div></div>
+            <div class="bg-gradient-to-b from-slate-900 to-slate-950 rounded-xl py-2 border border-cyan-400/50"><div id="cd-hours" class="text-2xl sm:text-3xl font-black text-cyan-300">00</div><div class="text-[11px] text-slate-300 font-bold">שעות</div></div>
+            <div class="bg-gradient-to-b from-slate-900 to-slate-950 rounded-xl py-2 border border-pink-400/50"><div id="cd-mins" class="text-2xl sm:text-3xl font-black text-pink-400">00</div><div class="text-[11px] text-slate-300 font-bold">דקות</div></div>
+            <div class="bg-gradient-to-b from-slate-900 to-slate-950 rounded-xl py-2 border border-amber-400/50"><div id="cd-secs" class="text-2xl sm:text-3xl font-black text-amber-300">00</div><div class="text-[11px] text-slate-300 font-bold">שניות</div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WILD CUSTOM ILLUSTRATED DJ LINE-UP -->
+      <section class="space-y-4 mb-6">
+        <div class="flex items-center justify-center gap-3">
+          <span class="h-0.5 flex-1 bg-gradient-to-r from-transparent via-pink-500 to-lime-400"></span>
+          <span class="text-white font-black tracking-widest text-xl drop-shadow-[0_0_12px_rgba(255,255,255,0.8)]">DJ Line-up</span>
+          <span class="h-0.5 flex-1 bg-gradient-to-l from-transparent via-cyan-400 to-lime-400"></span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+          <!-- DJ NEFTUL -->
+          <div class="dj-card-neftul rounded-2xl p-3.5 text-center flex flex-col justify-between transition hover:scale-[1.03]">
+            <div>
+              <div class="w-28 h-28 mx-auto mb-1.5 flex items-center justify-center">
+                <svg width="112" height="112" viewBox="0 0 140 130" class="w-full h-full drop-shadow-[0_0_14px_rgba(245,158,11,0.85)]">
+                  <path d="M25 95 C15 65, 35 45, 45 25 C55 45, 65 20, 70 10 C80 28, 95 20, 100 40 C115 55, 125 75, 115 95 Z" fill="#ea580c" opacity="0.45"/>
+                  <path d="M12 96 L22 58 L32 96 M10 56 L42 44 M38 42 Q46 46 42 56 L36 54" stroke="#fbbf24" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+                  <rect x="102" y="64" width="22" height="32" rx="3" fill="#92400e" stroke="#fbbf24" stroke-width="2.5"/>
+                  <line x1="102" y1="74" x2="124" y2="74" stroke="#fbbf24" stroke-width="2"/>
+                  <line x1="102" y1="86" x2="124" y2="86" stroke="#fbbf24" stroke-width="2"/>
+                  <polygon points="70,18 114,96 26,96" fill="#18181b" stroke="#facc15" stroke-width="5" stroke-linejoin="round"/>
+                  <circle cx="70" cy="68" r="6" fill="#facc15"/>
+                  <path d="M70 68 L61 52 A18 18 0 0 1 79 52 Z" fill="#facc15"/>
+                  <path d="M70 68 L87 74 A18 18 0 0 1 78 86 Z" fill="#facc15"/>
+                  <path d="M70 68 L53 74 A18 18 0 0 0 62 86 Z" fill="#facc15"/>
+                </svg>
+              </div>
+              <div class="font-black text-2xl tracking-wider bg-gradient-to-b from-yellow-200 via-amber-400 to-orange-600 bg-clip-text text-transparent drop-shadow-[0_2px_0_#000]">
+                DJ NEFTUL
+              </div>
+              <p class="text-[11px] text-amber-200 font-bold mt-0.5">טכנו, האוס ואנרגיה מתפרצת</p>
+            </div>
+            <button type="button" onclick="hypeDj('neftul')" class="mt-2.5 w-full bg-amber-500/30 hover:bg-amber-500/50 border border-amber-300 text-amber-100 text-xs font-black py-2 rounded-xl transition active:scale-95">
+              ☢️ הרם לסט (<span id="hype-neftul">42</span>)
+            </button>
+          </div>
+
+          <!-- DJ BACKMAN -->
+          <div class="dj-card-backman rounded-2xl p-3.5 text-center flex flex-col justify-between transition hover:scale-[1.03]">
+            <div>
+              <div class="w-28 h-28 mx-auto mb-1.5 flex items-center justify-center">
+                <svg width="112" height="112" viewBox="0 0 140 130" class="w-full h-full drop-shadow-[0_0_15px_rgba(34,211,238,0.9)]">
+                  <path d="M36 42 L6 34 L16 46 L10 54 L26 58 L20 66 L38 66 Z" fill="#e2e8f0" stroke="#38bdf8" stroke-width="2"/>
+                  <path d="M104 42 L134 34 L124 46 L130 54 L114 58 L120 66 L102 66 Z" fill="#e2e8f0" stroke="#38bdf8" stroke-width="2"/>
+                  <polygon points="34,26 106,26 96,86 70,112 44,86" fill="#0f172a" stroke="#22d3ee" stroke-width="4.5"/>
+                  <polygon points="42,34 98,34 90,81 70,102 50,81" fill="none" stroke="#f43f5e" stroke-width="2"/>
+                  <polygon points="56,36 44,58 54,58 48,78 66,52 55,52" fill="#fde047"/>
+                  <polygon points="86,36 74,58 84,58 78,78 96,52 85,52" fill="#fde047"/>
+                  <polygon points="70,84 73,90 79,90 74,94 76,100 70,96 64,100 66,94 61,90 67,90" fill="#ffffff"/>
+                </svg>
+              </div>
+              <div class="font-black text-2xl tracking-wider bg-gradient-to-b from-white via-cyan-200 to-blue-500 bg-clip-text text-transparent drop-shadow-[0_2px_0_#000]">
+                DJ BACKMAN
+              </div>
+              <p class="text-[11px] text-cyan-200 font-bold mt-0.5">מיינסטרים, להיטים וביטים כבדים</p>
+            </div>
+            <button type="button" onclick="hypeDj('backman')" class="mt-2.5 w-full bg-cyan-500/30 hover:bg-cyan-500/50 border border-cyan-300 text-cyan-100 text-xs font-black py-2 rounded-xl transition active:scale-95">
+              ⚡ הרם לסט (<span id="hype-backman">58</span>)
+            </button>
+          </div>
+
+          <!-- DJ INSURANCE -->
+          <div class="dj-card-insurance rounded-2xl p-3.5 text-center flex flex-col justify-between transition hover:scale-[1.03]">
+            <div>
+              <div class="w-28 h-28 mx-auto mb-1.5 flex items-center justify-center">
+                <svg width="112" height="112" viewBox="0 0 140 130" class="w-full h-full drop-shadow-[0_0_14px_rgba(244,114,182,0.85)]">
+                  <polygon points="70,55 15,15 45,10" fill="#f472b6" opacity="0.35"/>
+                  <polygon points="70,55 125,15 95,10" fill="#38bdf8" opacity="0.35"/>
+                  <path d="M26 52 C26 22, 114 22, 114 52 Q92 44, 70 52 Q48 44, 26 52 Z" fill="url(#umbGrad)" stroke="#fbcfe8" stroke-width="3"/>
+                  <defs>
+                    <linearGradient id="umbGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#ec4899"/>
+                      <stop offset="50%" stop-color="#a855f7"/>
+                      <stop offset="100%" stop-color="#06b6d4"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M70 50 L70 94 C70 102, 58 102, 58 94" fill="none" stroke="#f9a8d4" stroke-width="4.5" stroke-linecap="round"/>
+                  <rect x="20" y="58" width="32" height="42" rx="4" fill="#f8fafc" stroke="#10b981" stroke-width="2.5"/>
+                  <rect x="29" y="54" width="14" height="7" rx="2" fill="#10b981"/>
+                  <line x1="26" y1="69" x2="46" y2="69" stroke="#64748b" stroke-width="2.5"/>
+                  <line x1="26" y1="77" x2="46" y2="77" stroke="#64748b" stroke-width="2.5"/>
+                  <line x1="26" y1="85" x2="40" y2="85" stroke="#10b981" stroke-width="2.5"/>
+                  <rect x="82" y="64" width="38" height="28" rx="5" fill="#2563eb" stroke="#93c5fd" stroke-width="2.5"/>
+                  <path d="M93 64 L93 58 L109 58 L109 64" fill="none" stroke="#93c5fd" stroke-width="3"/>
+                  <rect x="97" y="75" width="8" height="6" rx="1" fill="#fde047"/>
+                </svg>
+              </div>
+              <div class="font-black text-xl sm:text-2xl tracking-wide bg-gradient-to-b from-white via-pink-200 to-fuchsia-400 bg-clip-text text-transparent drop-shadow-[0_2px_0_#000]">
+                DJ INSURANCE
+              </div>
+              <p class="text-[11px] text-pink-200 font-bold mt-0.5">כיסוי מלא לרחבה עד אור הבוקר</p>
+            </div>
+            <button type="button" onclick="hypeDj('insurance')" class="mt-2.5 w-full bg-pink-500/30 hover:bg-pink-500/50 border border-pink-300 text-pink-100 text-xs font-black py-2 rounded-xl transition active:scale-95">
+              ☂️ הרם לסט (<span id="hype-insurance">39</span>)
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMPACT & PROPORTIONAL CENTRAL RSVP BAR -->
+      <section class="rsvp-hero-box rounded-2xl p-3.5 mb-5 relative">
+        <div class="flex items-center justify-between gap-2 mb-2.5 pb-2 border-b border-lime-400/25">
+          <div>
+            <h2 class="text-base sm:text-lg font-black text-white flex items-center gap-1.5">
+              <span>🎟️ אישור הגעה להיערכות</span>
+            </h2>
+            <p class="text-[11px] text-lime-200/90">תעדכנו אם אתם באים כדי שנערך בהתאם</p>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-950/90 border border-lime-400/80 rounded-xl px-3 py-1.5 shrink-0">
+            <span class="text-xl font-black text-lime-400 leading-none" id="rsvpCount">1</span>
+            <span class="text-[11px] text-slate-200 font-bold leading-tight">כבר<br>מגיעים</span>
+          </div>
+        </div>
+
+        <form onsubmit="submitRsvp(event)" class="space-y-2 text-xs">
+          <div class="grid grid-cols-12 gap-2">
+            <input id="rsvpName" required type="text" placeholder="שם מלא *" class="col-span-5 bg-slate-950/95 border border-lime-400/40 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-lime-300" />
+            <select id="rsvpStatus" class="col-span-4 bg-slate-950/95 border border-lime-400/40 rounded-xl px-2 py-2 text-white font-bold">
+              <option value="מגיע">מגיע/ה 🎉</option>
+              <option value="אולי">אולי</option>
+              <option value="לא מגיע">לא מגיע/ה</option>
+            </select>
+            <input id="rsvpGuests" type="number" min="1" max="10" value="1" title="כמות" class="col-span-3 bg-slate-950/95 border border-lime-400/40 rounded-xl px-2 py-2 text-white font-bold text-center" />
+          </div>
+          <div class="flex gap-2">
+            <input id="rsvpRide" type="text" placeholder="טרמפ / הערה (אופציונלי)" class="flex-1 bg-slate-950/95 border border-white/15 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-cyan-400" />
+            <button type="submit" id="rsvpSubmitBtn" class="bg-gradient-to-r from-[#b5ff00] to-cyan-400 text-slate-950 font-black px-4 py-2 rounded-xl shadow-[0_0_16px_rgba(181,255,0,0.45)] hover:opacity-95 active:scale-95 transition shrink-0">
+              ✅ אשר הגעה
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Community Interactive Tabs -->
+      <nav class="grid grid-cols-3 gap-1.5 bg-slate-950/90 p-1.5 rounded-2xl border border-white/15 mb-4 text-xs sm:text-sm">
+        <button type="button" onclick="switchTab('guests')" id="tab-guests" class="tab-pill active py-2.5 px-1 rounded-xl transition">👥 מי בא וטרמפים</button>
+        <button type="button" onclick="switchTab('songs')" id="tab-songs" class="tab-pill py-2.5 px-1 rounded-xl transition text-slate-200 font-bold">🎵 בקשות שירים</button>
+        <button type="button" onclick="switchTab('trivia')" id="tab-trivia" class="tab-pill py-2.5 px-1 rounded-xl transition text-slate-200 font-bold">🏆 חידון זאבי</button>
+      </nav>
+
+      <!-- PANEL 1: GUEST LIST & RIDES -->
+      <section id="panel-guests" class="glass-panel rounded-2xl p-4 space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="font-black text-cyan-300 text-sm">רשימת משתתפים וטרמפים (מתעדכן חי)</h3>
+          <div class="flex gap-1.5">
+            <button type="button" onclick="fetchCentralRsvps()" class="text-xs bg-cyan-500/20 border border-cyan-400/40 px-2.5 py-1 rounded-lg text-cyan-200 font-bold">🔄 רענן</button>
+            <button type="button" onclick="exportCsvForSheets()" class="text-xs bg-white/10 px-2.5 py-1 rounded-lg text-amber-300 font-bold">CSV</button>
+          </div>
+        </div>
+        <div id="rsvpList" class="space-y-2 text-xs max-h-72 overflow-y-auto"></div>
+      </section>
+
+      <!-- PANEL 2: SONG REQUESTS -->
+      <section id="panel-songs" class="hidden space-y-4">
+        <div class="glass-panel rounded-2xl p-4">
+          <h2 class="text-lg font-black text-pink-400 mb-3">קיר בקשות שירים לדיג׳ייז</h2>
+          <form onsubmit="submitSong(event)" class="space-y-3 text-sm">
+            <input id="songTitle" required type="text" placeholder="שם השיר + אמן (לדוגמה: Freed From Desire)" class="w-full bg-slate-950/90 border border-white/15 rounded-xl px-3.5 py-2.5 text-white" />
+            <div class="grid grid-cols-2 gap-2.5">
+              <select id="songDj" class="bg-slate-950/90 border border-white/15 rounded-xl px-3 py-2.5 text-white">
+                <option value="DJ NEFTUL">הקדשה ל-DJ NEFTUL</option>
+                <option value="DJ BACKMAN">הקדשה ל-DJ BACKMAN</option>
+                <option value="DJ INSURANCE">הקדשה ל-DJ INSURANCE</option>
+              </select>
+              <input id="songBy" type="text" placeholder="השם שלך" class="bg-slate-950/90 border border-white/15 rounded-xl px-3 py-2.5 text-white" />
+            </div>
+            <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-amber-400 text-slate-950 font-black py-3 rounded-xl shadow-lg">הוסף לפלייליסט המסיבה</button>
+          </form>
+        </div>
+        <div id="songList" class="space-y-2"></div>
+      </section>
+
+      <!-- PANEL 3: TRIVIA -->
+      <section id="panel-trivia" class="hidden">
+        <div class="glass-panel rounded-2xl p-5">
+          <h2 class="text-lg font-black text-amber-300 mb-1">חידון זאבי — מהדורת 34</h2>
+          <p class="text-xs text-slate-300 mb-4">כמה טוב אתם מכירים את חתן השמחה?</p>
+          <div id="triviaBox"></div>
+        </div>
+      </section>
+
+      <!-- Bottom Neon Lime Ticket Banner matching Flyer -->
+      <footer class="mt-6">
+        <div class="hazard-ticket rounded-2xl overflow-hidden text-slate-950 text-center font-black">
+          <div class="hazard-top-bar"></div>
+          <div class="py-3.5 px-4">
+            <div class="text-2xl sm:text-3xl tracking-tight border-b-2 border-slate-950/30 pb-1.5">
+              17.12.26 | חמישי | 21:00
+            </div>
+            <div class="text-2xl sm:text-4xl pt-1.5">
+              משק לבבי • דן 11, נחלים
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 mt-3 text-xs font-black">
+              <a href="https://waze.com/ul?q=%D7%93%D7%9F%2011%20%D7%A0%D7%97%D7%9C%D7%99%D7%9D" target="_blank" class="bg-slate-950 text-cyan-300 px-3.5 py-2 rounded-xl hover:bg-slate-800 transition">🚗 ניווט ב-Waze</a>
+              <a href="https://maps.google.com/?q=%D7%93%D7%9F+11+%D7%A0%D7%97%D7%9C%D7%99%D7%9D" target="_blank" class="bg-slate-950 text-lime-300 px-3.5 py-2 rounded-xl hover:bg-slate-800 transition">📍 Google Maps</a>
+              <button type="button" onclick="downloadCalendar()" class="bg-slate-950 text-amber-300 px-3.5 py-2 rounded-xl hover:bg-slate-800 transition">📅 שמור ביומן</button>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyzfV7RGSOjJ7DkEypc-qtzhaN17IIy0TZpc5qC8yr8u8MBJcYonYW7TIWvx8Z37tQIdQ/exec';
+    const TARGET_DATE = new Date(2026, 11, 17, 21, 0, 0).getTime();
+
+    function updateCountdown() {
+      const diff = Math.max(0, TARGET_DATE - Date.now());
+      document.getElementById('cd-days').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+      document.getElementById('cd-hours').textContent = String(Math.floor((diff / 3600000) % 24)).padStart(2, '0');
+      document.getElementById('cd-mins').textContent = String(Math.floor((diff / 60000) % 60)).padStart(2, '0');
+      document.getElementById('cd-secs').textContent = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    let state = {
+      hype: { neftul: 42, backman: 58, insurance: 39 },
+      rsvps: [{ name: 'זאבי (חתן השמחה)', status: 'מגיע', guests: 1, ride: 'מגיע מוקדם להקים את הרחבה', date: '17/12/2026' }],
+      songs: [
+        { title: 'Daft Punk - One More Time', dj: 'DJ BACKMAN', by: 'זאבי', votes: 14 },
+        { title: 'Faithless - Insomnia', dj: 'DJ NEFTUL', by: 'קאווזה הפקות', votes: 11 }
+      ]
+    };
+
+    try {
+      const saved = JSON.parse(localStorage.getItem('kavza_34_v5'));
+      if (saved && saved.hype) state = saved;
+    } catch (e) {}
+
+    function saveState() {
+      try { localStorage.setItem('kavza_34_v5', JSON.stringify(state)); } catch (e) {}
+      renderAll();
+    }
+
+    function sendToGoogleSheet(payload) {
+      const params = new URLSearchParams(Object.assign({ action: 'save' }, payload));
+      const fullUrl = WEBHOOK_URL + '?' + params.toString();
+      fetch(fullUrl, { mode: 'no-cors' })
+        .then(function() {
+          setTimeout(fetchCentralRsvps, 1500);
+        })
+        .catch(function() {});
+    }
+
+    function fetchCentralRsvps() {
+      fetch(WEBHOOK_URL)
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && Array.isArray(data.rsvps) && data.rsvps.length > 0) {
+            state.rsvps = data.rsvps;
+            saveState();
+          }
+        })
+        .catch(function() {});
+    }
+
+    function switchTab(tab) {
+      ['guests', 'songs', 'trivia'].forEach(function(t) {
+        document.getElementById('panel-' + t).classList.toggle('hidden', t !== tab);
+        const btn = document.getElementById('tab-' + t);
+        btn.classList.toggle('active', t === tab);
+        btn.classList.toggle('text-slate-200', t !== tab);
       });
     }
-  }
-  
-  return ContentService
-    .createTextOutput(JSON.stringify({ rsvps: list.reverse() }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
+
+    function hypeDj(dj) { state.hype[dj]++; saveState(); }
+
+    function submitRsvp(e) {
+      e.preventDefault();
+      const btn = document.getElementById('rsvpSubmitBtn');
+      btn.textContent = 'שולח...';
+      const entry = {
+        date: new Date().toLocaleDateString('he-IL'),
+        name: document.getElementById('rsvpName').value.trim(),
+        status: document.getElementById('rsvpStatus').value,
+        guests: Number(document.getElementById('rsvpGuests').value) || 1,
+        ride: document.getElementById('rsvpRide').value.trim() || '-'
+      };
+      state.rsvps.unshift(entry);
+      sendToGoogleSheet(Object.assign({ type: 'rsvp' }, entry));
+      e.target.reset();
+      saveState();
+      setTimeout(function() {
+        btn.textContent = '✅ אושר! נתראה ברחבה 🎉';
+        setTimeout(function() { btn.textContent = '✅ אשר הגעה'; }, 3000);
+      }, 400);
+    }
+
+    function submitSong(e) {
+      e.preventDefault();
+      const song = {
+        title: document.getElementById('songTitle').value.trim(),
+        dj: document.getElementById('songDj').value,
+        by: document.getElementById('songBy').value.trim() || 'אורח/ת',
+        votes: 1
+      };
+      state.songs.unshift(song);
+      sendToGoogleSheet(Object.assign({ type: 'song' }, song));
+      e.target.reset();
+      saveState();
+    }
+
+    function voteSong(idx) {
+      state.songs[idx].votes++;
+      state.songs.sort(function(a, b) { return b.votes - a.votes; });
+      saveState();
+    }
+
+    function exportCsvForSheets() {
+      const rows = [['תאריך יצירה', 'שם מלא', 'סטטוס הגעה', 'מספר אורחים', 'טרמפים']];
+      state.rsvps.forEach(function(r) { rows.push([r.date, r.name, r.status, r.guests, r.ride]); });
+      const csv = '\uFEFF' + rows.map(function(r) {
+        return r.map(function(c) { return '"' + String(c).replace(/"/g, '""') + '"'; }).join(',');
+      }).join(String.fromCharCode(10));
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'kavza_34_guests.csv';
+      a.click();
+    }
+
+    function downloadCalendar() {
+      const ics = [
+        'BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT',
+        'DTSTART:20261217T190000Z', 'DTEND:20261218T010000Z',
+        'SUMMARY:חגיגות יומולדת 34 לזאבי - קאווזה הפקות',
+        'LOCATION:משק לבבי • דן 11, נחלים',
+        'DESCRIPTION:מסיבת ריקודים עם DJ NEFTUL, DJ BACKMAN ו-DJ INSURANCE',
+        'END:VEVENT', 'END:VCALENDAR'
+      ].join(String.fromCharCode(13, 10));
+      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'zeavi-34-party.ics';
+      a.click();
+    }
+
+    const questions = [
+      { q: 'איזו הפקה מרימה את האירוע של השנה?', opts: ['קאווזה הפקות 🌲', 'הפקות האחים כהן', 'הפקות המזרח'], a: 0 },
+      { q: 'איפה מתקיימת מסיבת הריקודים ב-17.12.26?', opts: ['פארק הירקון', 'משק לבבי • דן 11, נחלים', 'חוף הבונים'], a: 1 },
+      { q: 'כמה דיג׳ייז עולים להרים את הרחבה?', opts: ['דיג׳יי אחד', 'שניים', 'שלושה: NEFTUL, BACKMAN & INSURANCE'], a: 2 }
+    ];
+    let qIdx = 0, score = 0;
+
+    function renderTrivia() {
+      const box = document.getElementById('triviaBox');
+      if (qIdx >= questions.length) {
+        box.innerHTML = '<div class="text-center py-4"><div class="text-3xl font-black text-lime-400 mb-2">סיימת עם ' + score + ' / ' + questions.length + '!</div><button type="button" onclick="qIdx=0;score=0;renderTrivia()" class="bg-cyan-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs">שחק שוב</button></div>';
+        return;
+      }
+      const cur = questions[qIdx];
+      box.innerHTML = '<div class="font-bold text-white mb-3">' + (qIdx + 1) + '. ' + cur.q + '</div><div class="space-y-2">' +
+        cur.opts.map(function(opt, i) {
+          return '<button type="button" onclick="answerTrivia(' + i + ')" class="w-full text-right bg-slate-950/90 hover:bg-white/10 border border-white/15 rounded-xl px-4 py-2.5 text-xs transition">' + opt + '</button>';
+        }).join('') + '</div>';
+    }
+
+    function answerTrivia(i) {
+      if (i === questions[qIdx].a) score++;
+      qIdx++;
+      if (qIdx === questions.length) sendToGoogleSheet({ type: 'trivia', score: Math.round((score / questions.length) * 100) });
+      renderTrivia();
+    }
+
+    function shareWhatsapp() {
+      const nl = String.fromCharCode(10);
+      const text = [
+        '🌲🪩 קאווזה הפקות מציגים: חגיגות יומולדת 34 לזאבי!',
+        '📅 חמישי | 17.12.26 | 21:00',
+        '📍 משק לבבי • דן 11, נחלים',
+        '🎧 DJ NEFTUL | DJ BACKMAN | DJ INSURANCE',
+        'חשוב להיערכות! כנסו לאשר הגעה 👇',
+        window.location.href
+      ].join(nl);
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
+
+    function copyShareLink() {
+      if (navigator.clipboard) navigator.clipboard.writeText(window.location.href);
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'הועתק!';
+      setTimeout(function() { btn.textContent = 'העתק לינק'; }, 2000);
+    }
+
+    function renderAll() {
+      document.getElementById('hype-neftul').textContent = state.hype.neftul;
+      document.getElementById('hype-backman').textContent = state.hype.backman;
+      document.getElementById('hype-insurance').textContent = state.hype.insurance;
+
+      const total = state.rsvps.filter(function(r) { return r.status === 'מגיע'; }).reduce(function(acc, r) { return acc + r.guests; }, 0);
+      document.getElementById('rsvpCount').textContent = total;
+
+      document.getElementById('rsvpList').innerHTML = state.rsvps.map(function(r) {
+        return '<div class="bg-slate-950/80 border border-white/10 rounded-xl p-2.5 flex justify-between items-center">' +
+          '<div><span class="font-bold text-white">' + r.name + '</span>' +
+          '<span class="text-lime-400 mr-1">(' + r.status + ' • ' + r.guests + ')</span>' +
+          '<div class="text-slate-400 text-[11px]">🚗 ' + r.ride + '</div></div></div>';
+      }).join('');
+
+      document.getElementById('songList').innerHTML = state.songs.map(function(s, idx) {
+        return '<div class="glass-panel rounded-xl p-3 flex justify-between items-center text-xs">' +
+          '<div><div class="font-bold text-white text-sm">' + s.title + '</div>' +
+          '<div class="text-cyan-300">' + s.dj + ' • הוצע ע״י ' + s.by + '</div></div>' +
+          '<button type="button" onclick="voteSong(' + idx + ')" class="bg-pink-500/20 border border-pink-400/50 text-pink-200 font-black px-3 py-1.5 rounded-xl">🔥 ' + s.votes + '</button></div>';
+      }).join('');
+    }
+
+    renderAll();
+    renderTrivia();
+    fetchCentralRsvps();
+  </script>
+</body>
+</html>
